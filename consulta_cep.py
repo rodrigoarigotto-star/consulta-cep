@@ -1,4 +1,8 @@
+# consulta_cep.py
 import requests
+import json
+
+historico = []
 
 
 def limpar_cep(cep):
@@ -25,20 +29,21 @@ def exibir_endereco(dados):
 
 
 while True:
+    print("\n=== Consulta de CEP ===")
     print("1 - Buscar um CEP")
-    print("2 - Sair")
-
+    print("2 - Ver histórico de buscas")
+    print("3 - Salvar histórico em arquivo")
+    print("4 - Sair")
     opcao = input("Escolha uma opção: ")
 
     if opcao == "1":
-        cep = limpar_cep(input("Digite o CEP: "))
+        cep = limpar_cep(input("Digite o CEP (só números): "))
 
         if not cep_valido(cep):
-            print("CEP inválido! Digite 8 números.")
+            print("CEP inválido! Digite 8 números, sem espaços ou traços.")
             continue
 
         dados = consultar_cep(cep)
-
         if dados.get("erro"):
             print("CEP não encontrado.")
             continue
@@ -49,22 +54,17 @@ while True:
     elif opcao == "2":
         if not historico:
             print("Nenhuma busca feita ainda.")
-
         for item in historico:
             print(item["cep"], "-", item["logradouro"])
 
     elif opcao == "3":
-        print("Até logo!")
-        break
-    # ... opções 1 e 2 continuam iguais
-    elif opcao == "3":
-        with open("historico.json", "w") as arquivo:
+        with open("historico.json", "w", encoding="utf-8") as arquivo:
             json.dump(historico, arquivo, indent=2, ensure_ascii=False)
         print("Histórico salvo em historico.json!")
+
     elif opcao == "4":
         print("Até logo!")
         break
-
 
     else:
         print("Opção inválida.")
